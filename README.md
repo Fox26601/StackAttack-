@@ -83,3 +83,6 @@ Saves high scores to a file (highscores.txt).
 Displays the top 5 high scores.
 
 Ensures score entries are valid and sorted.
+
+How to Run:
+Open ConsoleApp2.sln
