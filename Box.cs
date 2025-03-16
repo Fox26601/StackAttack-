@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 
 // Represents a single box in the game
 class Box
