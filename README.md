@@ -1,24 +1,22 @@
 Stack Attack Console Game
 
-Overview
-
-This project is a C# console game inspired by the classic mobile game Stack Attack. The game challenges the player to avoid being crushed by falling boxes, clear full rows, and achieve the highest score possible. The player can move left (A) and right (D), jump (W), and push boxes to manage the stacking process.
+This project is a C# console game inspired by the classic mobile game Stack Attack. The goal is to avoid getting crushed by falling boxes, clear full rows, and achieve the highest possible score. The player can move left (A), move right (D), jump (W), and push boxes to manage the stacking process.
 
 Features
 
 Player Movement: Move left/right, jump, and push boxes.
 
-Falling Boxes: Boxes fall from the top and stack up.
+Falling Boxes: Boxes fall from the top and stack up over time.
 
 Row Clearing Mechanic: Complete rows disappear, similar to Tetris.
 
-Game Over Detection: The game ends when the player is crushed.
+Game Over Detection: The game ends when the player is crushed by a falling box.
 
 High Score System: Stores and displays the top scores.
 
-Key Spam Prevention: Ensures smooth controls by limiting input frequency.
+Input Handling Improvements: Prevents key spamming.
 
-Box Collision Handling: Stops movement at a box, requiring an additional key press to push it.
+Box Collision Handling: Stops movement at a box until a new input is received.
 
 Controls
 
@@ -30,59 +28,53 @@ W - Jump
 
 Q - Restart Game
 
-Game Components
+Project Structure
 
 1. Program.cs
 
-Entry point of the game.
+The entry point of the game.
 
 Initializes GameManager and starts the game loop.
 
 2. GameManager.cs
 
-Handles the game loop.
+Controls the game loop.
 
 Spawns boxes at regular intervals.
 
-Checks for full rows and removes them.
+Detects when the player loses the game.
 
-Detects if the player is crushed (game over).
-
-Updates and displays the score.
+Manages the score system.
 
 3. Player.cs
 
-Handles player movement and input.
+Manages player movement and actions.
 
-Implements jump mechanics.
+Implements jumping, gravity, and collision detection.
 
-Allows pushing of boxes.
-
-Prevents key spamming.
-
-Stops movement at a box until a new input is received.
+Allows pushing of boxes and prevents movement spam.
 
 4. Box.cs
 
-Represents individual falling boxes.
+Manages box properties and movement.
 
-Stores x and y position.
+Handles row-clearing mechanics.
 
-Allows updating of position.
+Checks for collisions and box stacking.
 
 5. GridManager.cs
 
 Manages the grid layout (20x20 field).
 
-Renders the player and boxes.
+Renders the player and boxes on the screen.
 
 6. HighScoreManager.cs
 
 Saves high scores to a file (highscores.txt).
 
-Displays the top 5 high scores.
+Loads and displays the top 5 high scores.
 
-Ensures score entries are valid and sorted.
+Ensures score entries are valid and sorted properly.
 
 How to Run:
-Open ConsoleApp2.sln
+Open StartGame.sln
