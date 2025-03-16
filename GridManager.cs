@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 
 class GridManager
 {
-    public const  int Width = 20; //const values cannot be changed after compilation, making them safer for constants.
+    public const  int Width = 20; //const values cannot be changed after compilation
     public const  int Height = 20;
     private char[,] grid = new char[Height, Width];
 

@@ -1,78 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+// Manages high scores
 class HighScoreManager
 {
-    private static string highScoreFile = "highscores.txt"; // File where high scores are stored
+    private static string filePath = "highscores.txt";
+    private static int maxHighScores = 5;
 
-    // Saves the player's high score if it's among the top 5
+    // Checks if the player's score qualifies for the leaderboard
+    public static bool IsHighScore(int score)
+    {
+        List<(string Name, int Score)> scores = LoadHighScores();
+        
+        // If the leaderboard has fewer than max scores or the score is higher than the lowest high score
+        if (scores.Count < maxHighScores)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < scores.Count; i++)
+        {
+            if (score > scores[i].Score)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Saves the high score if it qualifies
     public static void SaveHighScore(int score)
     {
-        List<(string Name, int Score)> scores = new List<(string, int)>(); // List to store high scores
-
-        // Read existing high scores from file if available
-        if (File.Exists(highScoreFile))
+        if (!IsHighScore(score))
         {
-            string[] lines = File.ReadAllLines(highScoreFile);
-            foreach (string line in lines)
+            Console.WriteLine("Your score was not high enough for the leaderboard.");
+            return;
+        }
+
+        List<(string Name, int Score)> scores = LoadHighScores();
+        Console.Write("Congratulations! You made the high score list. Enter your name: ");
+        string name = Console.ReadLine();
+        
+        try
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new Exception("Invalid name entered.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+            name = "Unknown";
+        }
+        
+        scores.Add((name, score));
+        SortScores(scores);
+
+        // Keep only the top scores
+        while (scores.Count > maxHighScores)
+        {
+            scores.RemoveAt(scores.Count - 1);
+        }
+
+        // Save to file
+        try
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
-                string[] parts = line.Split(',');
-                if (parts.Length == 2 && int.TryParse(parts[1], out int parsedScore))
+                for (int i = 0; i < scores.Count; i++)
                 {
-                    scores.Add((parts[0], parsedScore));
+                    writer.WriteLine(scores[i].Name + "," + scores[i].Score);
                 }
             }
         }
-
-        // Check if the player's score qualifies for the leaderboard
-        if (scores.Count < 5 || score > scores[scores.Count - 1].Score)
+        catch (Exception ex)
         {
-            Console.Write("Congratulations! You made the high score list. Enter your name: ");
-            string name = Console.ReadLine();
+            Console.WriteLine("Error saving high score: " + ex.Message);
+        }
+    }
+
+    // Loads high scores from file
+    public static List<(string Name, int Score)> LoadHighScores()
+    {
+        List<(string Name, int Score)> scores = new List<(string, int)>();
+
+        if (File.Exists(filePath))
+        {
             try
             {
-                name = Console.ReadLine();
-                if (string.IsNullOrEmpty(name))
-                    throw new Exception("Invalid name entered.");
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] parts = line.Split(',');
+                        if (parts.Length == 2 && int.TryParse(parts[1], out int parsedScore))
+                        {
+                            scores.Add((parts[0], parsedScore));
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
-                name = "Unknown";
+                Console.WriteLine("Error reading high scores: " + ex.Message);
             }
-            // Add new score to the list
-            scores.Add((name, score));
-
-            // Sort scores in descending order using a comparison method
-            scores.Sort(CompareScores);
-
-            // Keep only the top 5 scores
-            if (scores.Count > 5)
-            {
-                scores.RemoveAt(5);
-            }
-
-            // Save scores back to file
-            List<string> outputLines = new List<string>();
-            foreach (var entry in scores)
-            {
-                outputLines.Add(entry.Name + "," + entry.Score);
-            }
-            File.WriteAllLines(highScoreFile, outputLines);
         }
-        else
-        {
-            Console.WriteLine("Your score was not high enough for the leaderboard.");
-        }
+
+        SortScores(scores);
+        return scores;
     }
 
-    // Comparison method for sorting scores in descending order
-    private static int CompareScores((string Name, int Score) a, (string Name, int Score) b)
-    {
-        return b.Score.CompareTo(a.Score);
-    }
-
-    // Displays the top high scores in descending order
+    // Displays the high scores
     public static void DisplayHighScores()
     {
-        if (!File.Exists(highScoreFile))
+        List<(string Name, int Score)> scores = LoadHighScores();
+        
+        if (scores.Count == 0)
         {
             Console.WriteLine("No high scores recorded yet.");
             return;
@@ -80,26 +125,26 @@ class HighScoreManager
 
         Console.WriteLine("\n=== High Scores ===");
 
-        string[] lines = File.ReadAllLines(highScoreFile);
-        List<(string Name, int Score)> scores = new List<(string, int)>();
-
-        // Parse high scores from file
-        foreach (string line in lines)
+        for (int i = 0; i < scores.Count; i++)
         {
-            string[] parts = line.Split(',');
-            if (parts.Length == 2 && int.TryParse(parts[1], out int parsedScore))
-            {
-                scores.Add((parts[0], parsedScore));
-            }
+            Console.WriteLine(scores[i].Name + ": " + scores[i].Score);
         }
+    }
 
-        // Sort scores in descending order using the same comparison method
-        scores.Sort(CompareScores);
-
-        // Print high scores
-        foreach (var entry in scores)
+    // Sorts scores in descending order
+    private static void SortScores(List<(string Name, int Score)> scores)
+    {
+        for (int i = 0; i < scores.Count - 1; i++)
         {
-            Console.WriteLine($"{entry.Name}: {entry.Score}");
+            for (int j = i + 1; j < scores.Count; j++)
+            {
+                if (scores[j].Score > scores[i].Score)
+                {
+                    var temp = scores[i];
+                    scores[i] = scores[j];
+                    scores[j] = temp;
+                }
+            }
         }
     }
 }
