@@ -1,20 +1,17 @@
 
 class Player
 {
-    private GridManager grid;
     private int x;
     private int y;
     private bool isGrounded;
     private int jumpHeight;
     private bool canJump;
-    private GameManager gameManager;
+    private GameManager GameManager;
     private DateTime lastKeyPressTime = DateTime.MinValue;
     private TimeSpan keyPressCooldown = TimeSpan.FromMilliseconds(200);
 
-    public Player(GridManager grid, GameManager gameManager)
+    public Player()
     {
-        this.grid = grid;
-        this.gameManager = gameManager;
         x = GridManager.Width / 2; 
         y = GridManager.Height - 2;
         isGrounded = true;
@@ -51,7 +48,7 @@ class Player
                 }
                 if (key == ConsoleKey.Q)
                 {
-                    gameManager.RestartGame();
+                    GameManager.RestartGame();
                 }
             }
         }

@@ -11,7 +11,7 @@ class GameManager
     public GameManager()
     {
         grid = new GridManager(); // Create the grid
-        player = new Player(grid, this); // Create the player
+        player = new Player(); // Create the player
         score = 0;
         boxSpawnInterval = 5000;
     }
