@@ -39,7 +39,7 @@ class GameManager
             Thread.Sleep(200);
         }
     }
-
+    // Checks and clears filled rows, updates score and difficulty
     private void CheckFullRows()
     {
         for (int y = GridManager.Height - 2; y > 0; y--)

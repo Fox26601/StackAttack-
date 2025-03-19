@@ -26,7 +26,7 @@ class Box
         int x = rand.Next(1, GridManager.Width - 2);
         new Box(x, 1);
     }
-
+    // Updates boxes' positions, applying gravity
     public static void UpdateBoxes()
     {
         foreach (Box box in boxes)
@@ -37,7 +37,7 @@ class Box
             }
         }
     }
-
+   // Checks if a box exists at specific coordinates
     public static bool IsBoxAt(int checkX, int checkY)
     {
         foreach (Box box in boxes)
